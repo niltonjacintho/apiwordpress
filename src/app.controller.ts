@@ -12,7 +12,7 @@ export class AppController {
   }
 
   @Get('/diogo')
-  getDiogo(): Observable<any> {
+  getDiogo(): Promise<any> {
     return this.appService.getUsuarios();
   }
 }

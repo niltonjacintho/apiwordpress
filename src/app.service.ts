@@ -1,32 +1,58 @@
 import { HttpService } from '@nestjs/axios';
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { catchError, map } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import axios from 'axios';
 
 @Injectable()
 export class AppService {
-  constructor(private http: HttpService) {}
+  constructor(
+    private http: HttpService, //axios: Axios,
+  ) {}
 
   getHello(): string {
     return 'Hello World!';
   }
 
-  getUsuarios() {
+  getUsuarios(): Promise<any> {
     const url =
       'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users';
-    return this.http
-      .get(url)
-      .pipe(
-        map((res) => res.data),
-        //   map((bpi) => bpi?.USD),
-        //   map((usd) => {
-        //     return usd?.rate;
-        //   }),
-      )
-      .pipe(
-        catchError(() => {
-          throw new ForbiddenException('API not available');
-        }),
-      );
+
+    const username = 'admin';
+    const password = '1hro 8TLx UR6y iWyi bT5E mFMW';
+
+    const token = `${username}:${password}`;
+    const encodedToken = Buffer.from(token).toString('base64');
+    // const session_url = 'http://api_address/api/session_endpoint';
+
+    const config = {
+      method: 'get',
+      url: url,
+      headers: { Authorization: 'Basic ' + encodedToken },
+    };
+
+    return axios(config)
+      .then(function (response) {
+
+        console.log(JSON.stringify(response.data));
+        return JSON.stringify(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // return this.http
+    //   .get(url)
+    //   .pipe(
+    //     map((res) => res.data),
+    //     //   map((bpi) => bpi?.USD),
+    //     //   map((usd) => {
+    //     //     return usd?.rate;
+    //     //   }),
+    //   )
+    //   .pipe(
+    //     catchError(() => {
+    //       throw new ForbiddenException('API not available');
+    //     }),
+    //   );
     // const x = fetch(url, {
     //   headers: new Headers({
     //     //   'access-control-allow-credentials':' true',
