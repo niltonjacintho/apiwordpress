@@ -1,6 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Observable } from 'rxjs';
 
 @Controller()
 export class AppController {
@@ -11,8 +10,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/diogo')
-  getDiogo(): Promise<any> {
+  @Get('/getUsers')
+  getUsers(): Promise<any> {
     return this.appService.getUsuarios();
+  }
+
+  @Delete('/delete/:id')
+  deleteUser(@Param('id') id: number): Promise<any> {
+    return this.appService.removerUsuarios(id);
   }
 }
