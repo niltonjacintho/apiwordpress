@@ -1,6 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { Interface } from 'readline';
+
+interface TipoUsuario {
+  id: number;
+  name: string;
+  email: string;
+  slug: string;
+}
+
 
 @Injectable()
 export class AppService {
@@ -13,7 +22,7 @@ export class AppService {
 
   constructor(
     private http: HttpService, //axios: Axios,
-  ) {}
+  ) { }
 
   getHello(): string {
     return 'Hello World!dsfsdfsd';
@@ -28,7 +37,19 @@ export class AppService {
 
     return axios(config)
       .then(function (response) {
-        return JSON.stringify(response.data);
+        let result: TipoUsuario[] = [];
+        response.data.forEach(element => {
+          var t: TipoUsuario = {
+            id: element.id,
+            name: element.name,
+            slug: element.slug,
+            email: '',
+          };
+          console.log('t', t)
+          result.push(t);
+        });
+        console.log(result)
+        return JSON.stringify(result);
       })
       .catch(function (error) {
         console.log(error);
