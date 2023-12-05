@@ -19,25 +19,33 @@ export class AppService {
 
   token = `${this.username}:${this.password}`;
   encodedToken = Buffer.from(this.token).toString('base64');
-
+  dadosLocais: TipoUsuario[] = [];
   constructor(
     private http: HttpService, //axios: Axios,
-  ) { }
+  ) {
+    this.dadosLocais = []
+    this.updateDadosLocais();
+  }
 
   getHello(): string {
     return 'Hello World!dsfsdfsd';
   }
+  async updateDadosLocais(): Promise<void> {
+    while (this.dadosLocais.length == 0) {
+      await this.atualizaDadosLocaisUsuarios();
+    }
+  }
 
-  getUsuarios(): Promise<any> {
+  async atualizaDadosLocaisUsuarios() {
     const config = {
       method: 'get',
       url: this.url,
       headers: { Authorization: 'Basic ' + this.encodedToken },
     };
 
-    return axios(config)
+    var data = [];
+    const d = await axios(config)
       .then(function (response) {
-        let result: TipoUsuario[] = [];
         response.data.forEach(element => {
           var t: TipoUsuario = {
             id: element.id,
@@ -45,15 +53,31 @@ export class AppService {
             slug: element.slug,
             email: '',
           };
-          console.log('t', t)
-          result.push(t);
+          data.push(t);
         });
-        console.log(result)
-        return JSON.stringify(result);
       })
       .catch(function (error) {
+        // this.dadosLocais = [];
         console.log(error);
       });
+    this.dadosLocais = data;
+  }
+
+  excluirDadosLocaisUsuarios(idUsuario: number) {
+    var tempLocal: TipoUsuario[] = [];
+    for (let id = 0; id < this.dadosLocais.length; id++) {
+      const element = this.dadosLocais[id];
+      if (element.id != idUsuario) {
+        tempLocal.push(element);
+      };
+    }
+    this.dadosLocais = tempLocal
+  }
+
+
+
+  getUsuarios(): Promise<any> {
+    return Promise.resolve(JSON.stringify(this.dadosLocais));
   }
 
   removerUsuarios(id: number): Promise<any> {
@@ -67,7 +91,7 @@ export class AppService {
           throw new Error(`HTTP error! Status: ${response.json}`);
         }
         result = response;
-        console.log('Post deleted successfully');
+        this.excluirDadosLocaisUsuarios(id);
       })
       .catch((error) => {
         console.error('Error:', error);
