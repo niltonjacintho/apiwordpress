@@ -13,7 +13,7 @@ interface TipoUsuario {
 
 @Injectable()
 export class AppService {
-  db = new JsonDB(new Config("./diogodb", true, false, '/'));
+  db = new JsonDB(new Config("./diogodb/data", true, false, '/'));
   url = 'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users';
   username = 'admin';
   password = '1hro 8TLx UR6y iWyi bT5E mFMW';
