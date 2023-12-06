@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { Interface } from 'readline';
+import { JsonDB, Config } from 'node-json-db';
 
 interface TipoUsuario {
   id: number;
@@ -13,6 +13,7 @@ interface TipoUsuario {
 
 @Injectable()
 export class AppService {
+  db = new JsonDB(new Config("./diogodb", true, false, '/'));
   url = 'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users';
   username = 'admin';
   password = '1hro 8TLx UR6y iWyi bT5E mFMW';
@@ -27,13 +28,36 @@ export class AppService {
     this.updateDadosLocais();
   }
 
-  getHello(): string {
+  async getHello(): Promise<string> {
+    await this.db.push("/test1", "super test");
+
+    // When pushing new data for a DataPath that doesn't exist, it automatically creates the hierarchy
+    await this.db.push("/test2/my/test", 5);
+
+    // You can also push objects directly
+    await this.db.push("/test3", { test: "test", json: { test: ["test"] } });
+
+    // If you don't want to override the data but to merge them
+    // The merge is recursive and works with Object and Array.
+    await this.db.push("/test3", {
+      new: "cool",
+      json: {
+        important: 5
+      }
+    }, false);
+    console.log('vai salvar');
+
+    await this.db.save(true).then((result) => {
+      console.log(result);
+    });
     return 'Hello World!dsfsdfsd';
   }
-  async updateDadosLocais(): Promise<void> {
+
+  async updateDadosLocais(): Promise<string> {
     while (this.dadosLocais.length == 0) {
       await this.atualizaDadosLocaisUsuarios();
     }
+    return Promise.resolve('done');
   }
 
   async atualizaDadosLocaisUsuarios() {

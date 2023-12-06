@@ -1,13 +1,14 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getHello(): Promise<string> {
+    await this.appService.getHello();
+    return 'this.appService.getHello();'
   }
 
   @Get('/getUsers')
@@ -18,5 +19,10 @@ export class AppController {
   @Delete('/delete/:id')
   deleteUser(@Param('id') id: number): Promise<any> {
     return this.appService.removerUsuarios(id);
+  }
+
+  @Post('/update')
+  updateDadosLocais(): Promise<any> {
+    return this.appService.updateDadosLocais();
   }
 }
