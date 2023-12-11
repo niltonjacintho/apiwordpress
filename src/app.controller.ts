@@ -21,8 +21,9 @@ export class AppController {
     return this.appService.removerUsuarios(id);
   }
 
-  @Post('/update')
-  updateDadosLocais(): Promise<any> {
-    return this.appService.updateDadosLocais();
+  @Get('/update')
+  async updateDadosLocais(): Promise<any> {
+    console.log('updateDadosLoca');
+    return await this.appService.updateDadosLocais(true);
   }
 }

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { JsonDB, Config } from 'node-json-db';
+import { Interface } from 'readline';
 
 interface TipoUsuario {
   id: number;
@@ -13,7 +13,6 @@ interface TipoUsuario {
 
 @Injectable()
 export class AppService {
-  db = new JsonDB(new Config("./diogodb/data", true, false, '/'));
   url = 'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users';
   username = 'admin';
   password = '1hro 8TLx UR6y iWyi bT5E mFMW';
@@ -25,35 +24,18 @@ export class AppService {
     private http: HttpService, //axios: Axios,
   ) {
     this.dadosLocais = []
-    this.updateDadosLocais();
+    this.updateDadosLocais(false);
   }
 
-  async getHello(): Promise<string> {
-    await this.db.push("/test1", "super test");
-
-    // When pushing new data for a DataPath that doesn't exist, it automatically creates the hierarchy
-    await this.db.push("/test2/my/test", 5);
-
-    // You can also push objects directly
-    await this.db.push("/test3", { test: "test", json: { test: ["test"] } });
-
-    // If you don't want to override the data but to merge them
-    // The merge is recursive and works with Object and Array.
-    await this.db.push("/test3", {
-      new: "cool",
-      json: {
-        important: 5
-      }
-    }, false);
-    console.log('vai salvar');
-
-    await this.db.save(true).then((result) => {
-      console.log(result);
-    });
+  getHello(): string {
     return 'Hello World!dsfsdfsd';
   }
 
-  async updateDadosLocais(): Promise<string> {
+  async updateDadosLocais(force: boolean): Promise<string> {
+    if (force) {
+      this.dadosLocais = [];
+    }
+    console.log('updateDadosLocais', this.dadosLocais.length);
     while (this.dadosLocais.length == 0) {
       await this.atualizaDadosLocaisUsuarios();
     }
@@ -61,6 +43,7 @@ export class AppService {
   }
 
   async atualizaDadosLocaisUsuarios() {
+    console.log('entrou em uodater')
     const config = {
       method: 'get',
       url: this.url,
@@ -85,6 +68,7 @@ export class AppService {
         console.log(error);
       });
     this.dadosLocais = data;
+    console.log(data);
   }
 
   excluirDadosLocaisUsuarios(idUsuario: number) {
@@ -104,9 +88,9 @@ export class AppService {
     return Promise.resolve(JSON.stringify(this.dadosLocais));
   }
 
-  removerUsuarios(id: number): Promise<any> {
+  async removerUsuarios(id: number): Promise<any> {
     let result;
-    fetch(`${this.url}/${id}?reassign=false&force=true`, {
+    await fetch(`${this.url}/${id}?reassign=false&force=true`, {
       method: 'DELETE',
       headers: { Authorization: 'Basic ' + this.encodedToken },
     })
