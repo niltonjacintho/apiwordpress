@@ -13,9 +13,9 @@ interface TipoUsuario {
 
 @Injectable()
 export class AppService {
-  url = 'https://rb1-condominio.com.br/extranet/wp-json/wp/v2/users?context=edit';
+  url = 'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users?context=edit';
   username = 'admin';
-  password = 'pt2L xke0 6lUh SkRk rBrm X2wb';
+  password = '1C9K 67jh 2Lbx xzKt 3Isz LemQ';
 
   token = `${this.username}:${this.password}`;
   encodedToken = Buffer.from(this.token).toString('base64');
