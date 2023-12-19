@@ -17,7 +17,7 @@ export class AppController {
   }
 
   @Delete('/delete/:id')
-  deleteUser(@Param('id') id: number): Promise<any> {
+  deleteUser(@Param('id') id: string): Promise<any> {
     return this.appService.removerUsuarios(id);
   }
 

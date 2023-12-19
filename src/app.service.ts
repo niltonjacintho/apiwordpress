@@ -87,23 +87,29 @@ export class AppService {
     return Promise.resolve(JSON.stringify(this.dadosLocais));
   }
 
-  async removerUsuarios(id: number): Promise<any> {
+  async removerUsuarios(ids: string): Promise<any> {
+    const arrayIds = ids.split(";");
     let result;
-    await fetch(`${this.url}/${id}?reassign=false&force=true`, {
-      method: 'DELETE',
-      headers: { Authorization: 'Basic ' + this.encodedToken },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.json}`);
-        }
-        result = response;
-        this.excluirDadosLocaisUsuarios(id);
+    console.log(arrayIds)
+    for (let i = 0; i < arrayIds.length; i++) {
+      const id = arrayIds[i];
+      console.log(id, 'number id', Number(id));
+      await fetch(`${this.url}/${id}?reassign=false&force=true`, {
+        method: 'DELETE',
+        headers: { Authorization: 'Basic ' + this.encodedToken },
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        result = error;
-      });
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.json}`);
+          }
+          result = response;
+          this.excluirDadosLocaisUsuarios(Number(id));
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          result = error;
+        });
+    }
     return result;
   }
 }
