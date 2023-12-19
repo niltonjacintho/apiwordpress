@@ -13,9 +13,10 @@ interface TipoUsuario {
 
 @Injectable()
 export class AppService {
-  url = 'https://rb1-condominio.com.br/extranet-teste/wp-json/wp/v2/users?context=edit';
+  url = 'https://rb1-condominio.com.br/extranet/wp-json/wp/v2/users';
   username = 'admin';
-  password = '1C9K 67jh 2Lbx xzKt 3Isz LemQ';
+  password = 'KbBS A2YC eFbF Ujiw j8Yd KbIJ';
+  //password = '1C9K 67jh 2Lbx xzKt 3Isz LemQ';
 
   token = `${this.username}:${this.password}`;
   encodedToken = Buffer.from(this.token).toString('base64');
@@ -46,7 +47,7 @@ export class AppService {
     console.log('entrou em uodater')
     const config = {
       method: 'get',
-      url: this.url,
+      url: this.url + '?context=edit',
       headers: { Authorization: 'Basic ' + this.encodedToken },
     };
 
@@ -94,21 +95,27 @@ export class AppService {
     for (let i = 0; i < arrayIds.length; i++) {
       const id = arrayIds[i];
       console.log(id, 'number id', Number(id));
-      await fetch(`${this.url}/${id}?reassign=false&force=true`, {
-        method: 'DELETE',
-        headers: { Authorization: 'Basic ' + this.encodedToken },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.json}`);
-          }
-          result = response;
-          this.excluirDadosLocaisUsuarios(Number(id));
+      try {
+        console.log(`${this.url}/${id}?reassign=false&force=true`)
+        await fetch(`${this.url}/${id}?reassign=false&force=true`, {
+          method: 'DELETE',
+          headers: { Authorization: 'Basic ' + this.encodedToken },
         })
-        .catch((error) => {
-          console.error('Error:', error);
-          result = error;
-        });
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`ERRO NO WORDPRESS HTTP error! Status: ${response.json}`);
+            }
+            result = response;
+            this.excluirDadosLocaisUsuarios(Number(id));
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            result = error;
+          });
+      } catch (error) {
+        console.log('Error de delete:', error);
+      }
+
     }
     return result;
   }
