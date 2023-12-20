@@ -52,6 +52,7 @@ export class AppService {
     };
 
     var data = [];
+    this.dadosLocais = [];
     const d = await axios(config)
       .then(function (response) {
         response.data.forEach(element => {
