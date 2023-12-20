@@ -55,7 +55,9 @@ export class AppService {
     this.dadosLocais = [];
     const d = await axios(config)
       .then(function (response) {
+
         response.data.forEach(element => {
+          console.log(element);
           var t: TipoUsuario = {
             id: element.id,
             name: element.name,
@@ -69,7 +71,7 @@ export class AppService {
         // this.dadosLocais = [];
         console.log(error);
       });
-    this.dadosLocais = []; //data;
+    this.dadosLocais.push(data[0]);
   }
 
   excluirDadosLocaisUsuarios(idUsuario: number) {
