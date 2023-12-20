@@ -98,7 +98,6 @@ export class AppService {
       try {
         console.log(`${this.url}/${id}?reassign=false&force=true`)
         await axios.delete(`${this.url}/${id}?reassign=false&force=true`, {
-          method: 'DELETE',
           headers: { Authorization: 'Basic ' + this.encodedToken },
         })
           .then((response) => {
