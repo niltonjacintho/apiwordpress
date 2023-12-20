@@ -15,9 +15,10 @@ interface TipoUsuario {
 export class AppService {
   url = 'https://rb1-condominio.com.br/extranet/wp-json/wp/v2/users';
   username = 'admin';
-  password = 'KbBS A2YC eFbF Ujiw j8Yd KbIJ';
+  password = 'gMOK Wpll pD9m N8mu ry4Y g0eA';
   //password = '1C9K 67jh 2Lbx xzKt 3Isz LemQ';
 
+  //GNaH Dx0k G3dc 1gqb PTBU RBdH
   token = `${this.username}:${this.password}`;
   encodedToken = Buffer.from(this.token).toString('base64');
   dadosLocais: TipoUsuario[] = [];
@@ -55,9 +56,8 @@ export class AppService {
     this.dadosLocais = [];
     const d = await axios(config)
       .then(function (response) {
-
         response.data.forEach(element => {
-          console.log(element);
+          console.log('ELEMENT ', element);
           var t: TipoUsuario = {
             id: element.id,
             name: element.name,
@@ -66,12 +66,13 @@ export class AppService {
           };
           data.push(t);
         });
+        console.log('datya depois de carregar', data)
       })
       .catch(function (error) {
         // this.dadosLocais = [];
         console.log(error);
       });
-    this.dadosLocais.push(data[0]);
+    this.dadosLocais = data;
   }
 
   excluirDadosLocaisUsuarios(idUsuario: number) {
