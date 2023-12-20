@@ -96,7 +96,7 @@ export class AppService {
       const id = arrayIds[i];
       console.log(id, 'number id', Number(id));
       try {
-        console.log(`${this.url}/${id}?reassign=false&force=true`)
+        console.log(`${this.url}/${id}?reassign=false&force=true`, this.encodedToken)
         await axios.delete(`${this.url}/${id}?reassign=false&force=true`, {
           headers: { Authorization: 'Basic ' + this.encodedToken },
         })
