@@ -97,15 +97,15 @@ export class AppService {
       console.log(id, 'number id', Number(id));
       try {
         console.log(`${this.url}/${id}?reassign=false&force=true`)
-        await fetch(`${this.url}/${id}?reassign=false&force=true`, {
+        await axios.delete(`${this.url}/${id}?reassign=false&force=true`, {
           method: 'DELETE',
           headers: { Authorization: 'Basic ' + this.encodedToken },
         })
           .then((response) => {
-            if (!response.ok) {
-              throw new Error(`ERRO NO WORDPRESS HTTP error! Status: ${response.json}`);
+            if (!response.status) {
+              throw new Error(`ERRO NO WORDPRESS HTTP error! Status: ${response.data}`);
             }
-            result = response;
+            result = response.data;
             this.excluirDadosLocaisUsuarios(Number(id));
           })
           .catch((error) => {
