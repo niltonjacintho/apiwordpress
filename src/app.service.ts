@@ -69,7 +69,7 @@ export class AppService {
         // this.dadosLocais = [];
         console.log(error);
       });
-    this.dadosLocais = data;
+    this.dadosLocais = []; //data;
   }
 
   excluirDadosLocaisUsuarios(idUsuario: number) {
