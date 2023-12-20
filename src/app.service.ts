@@ -96,15 +96,16 @@ export class AppService {
       const id = arrayIds[i];
       console.log(id, 'number id', Number(id));
       try {
-        console.log(`${this.url}/${id}?reassign=false&force=true`, this.encodedToken)
-        await axios.delete(`${this.url}/${id}?reassign=false&force=true`, {
+        console.log(`${this.url}/${id}?reassign=false&force=true`)
+        await fetch(`${this.url}/${id}?reassign=false&force=true`, {
+          method: 'DELETE',
           headers: { Authorization: 'Basic ' + this.encodedToken },
         })
           .then((response) => {
-            if (!response.status) {
-              throw new Error(`ERRO NO WORDPRESS HTTP error! Status: ${response.data}`);
+            if (!response.ok) {
+              throw new Error(`ERRO NO WORDPRESS HTTP error! Status: ${response.json}`);
             }
-            result = response.data;
+            result = response;
             this.excluirDadosLocaisUsuarios(Number(id));
           })
           .catch((error) => {
